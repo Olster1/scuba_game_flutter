@@ -1,3 +1,3 @@
-# scuba_game
+# Scuba Game
 
-A new Flutter project.
+A game 

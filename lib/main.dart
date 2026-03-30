@@ -5,8 +5,10 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_forge2d/flame_forge2d.dart' hide World;
 import 'package:flutter/material.dart';
+import 'package:scuba_game/entities/cave_generation.dart';
 import 'package:scuba_game/entities/coral_entity.dart';
 import 'package:scuba_game/entities/player_entity.dart';
+import 'package:scuba_game/entities/sky_background.dart';
 
 void main() {
   runApp(GameWidget(game: MyPhysicsGame()));
@@ -15,9 +17,10 @@ void main() {
 class MyPhysicsGame extends Forge2DGame with HasKeyboardHandlerComponents {
   MyPhysicsGame() : super(gravity: Vector2(0, 0));
 
-  final double _cameraSharpness = 5.0;
-
   late Player player;
+
+  // @override
+  // Color backgroundColor() => const Color.fromARGB(255, 0, 65, 91);
 
   @override
   Future<void> onLoad() async {
@@ -28,29 +31,27 @@ class MyPhysicsGame extends Forge2DGame with HasKeyboardHandlerComponents {
     camera = CameraComponent(world: world);
     await add(camera);
 
-    // 1. Load the background as a simple SpriteComponent
-    final background = SpriteComponent(
-      sprite: await Sprite.load('ocean_backdrop.png'),
-
-      size: canvasSize,
-    );
-
+    add(SkyBackground()..priority = -100);
     // Set the camera to look at the center of the world coordinates
     camera.viewfinder.anchor = Anchor.center;
 
     // Optional: Zoom out a bit since Forge2D meters are large
-    camera.viewfinder.zoom = 15.0;
+    camera.viewfinder.zoom = 10.0;
 
-    camera.backdrop.add(background);
+    // Add the CaveManager to the world. It will generate everything on its `onLoad`.
+    await world.add(CaveManager());
 
-    await world.add(Coral(initialPosition: Vector2(10, 10)));
-
-    player = Player(initialPosition: Vector2(0, 0));
+    player = Player(initialPosition: Vector2(-4, 3));
     await world.add(player);
-    camera.follow(
-      player,
-      maxSpeed: 10, // The camera will "chase" the player at this speed
-      snap: false,
-    );
+    camera.follow(player, snap: true);
   }
+
+  // Inside your Manager or Game class
+  @override
+  void update(double dt) {
+    super.update(dt);
+  }
+
+  @override
+  bool get debugMode => false;
 }

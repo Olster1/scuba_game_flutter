@@ -13,10 +13,10 @@ dependencies:
   xml: ^6.6.1
   forge2d: ^0.14.2+1
   flame_forge2d: ^0.19.2+5
+  fast_noise: ^2.0.0
+  vector_math: ^2.2.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^6.0.0
 
 flutter:
